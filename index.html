@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" style="height: 1200px;">
+    <head>
+        <meta charset="utf-8">
+        <title>사무 자동화</title>
+        <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    </head>
+    <style>
+       
+        #SQLtext {
+            width: 529px;
+            height: 267px;
+        }
+
+        #DataTextDiv {
+            width: 529px;
+        }
+
+        #DataText {
+            width: 529px;
+            height: 267px;
+        }
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            var text;
+            var num= 0;
+            var arr = new Array(); 
+
+            $("#btnFin").click(function () {
+               
+                text= $("#SQLtext").val();
+                $("#SQLtextDiv").append(text);
+                $("#btnNext1").show();
+            });
+
+            $("#btnDelete").click(function () {
+
+                $("#SQLtextDiv").empty();
+                $("#num").empty();
+                $("#num").append("데이터 0개 입력");
+                $("#SQLtext").val("");
+                $("#btnNext1").hide();
+                arr = [];
+                num=0;
+            });
+
+            $("#DateNumPlus").click(function () {
+               
+                num++;
+                setTextToPos("["+ num +"]");
+
+                $("#num").empty();
+                $("#num").append("데이터"+ num +"개 입력");
+            });
+
+            $("#DateNumDelete").click(function () {
+               
+                num++;
+                arr.push(num); 
+
+                console.log(arr);
+           });
+
+            $("#btnNext1").click(function () {
+                text= $("#SQLtext").val();
+                $("#SQLtextDiv2").append(text);
+
+                $("#DivLevel2").show();
+                $("#DivLevel1").hide();
+            });
+
+            $("#btnTagSC").click(function () {
+                var text = document.getElementById('DataText');
+                var result = text.value.replace(/(\n|\r\n)/g, '<br>');
+
+                console.log(result);
+            });
+
+            $("#btnNext2").click(function () {
+               
+                var totalCount;
+                var numPlusOne =0;
+                var number=0;
+                var position;
+                var sign= $("#DataTextDiv").val();
+                var text2 = document.getElementById('DataText');
+                var result = text2.value.replace(/(\n|\r\n)/g, '<br>');
+                var afterStr = result.split(sign);
+               
+                $("#DivLevel3").show();
+                $("#DivLevel2").hide();
+
+                totalCount = parseInt(afterStr.length)/num;
+
+                for(var h=0 ; h < totalCount ; h++){
+                   
+                    var textT= $("#SQLtext").val();
+
+                    for(var i=0 ; i < num ; i++){
+                            
+                        number++;
+
+                        for(var f=0 ; f < arr.length ; f++){
+                            
+                            if(number != arr[f]){
+
+                            position = textT.indexOf("["+ number +"]");
+                            textT = textT.replace("["+ number +"]","");
+
+                            textT = [textT.slice(0, position), afterStr[numPlusOne], textT.slice(position)].join('');
+
+                            }   
+                        }
+
+                        numPlusOne++;
+                    }
+
+                    number=0;
+
+                    $("#MakeFinData").append(textT + "\n \n");
+                }
+
+                $("#MakeFinDataTotal").append('총'+ totalCount +'개');
+            });
+
+        });
+
+        function setTextToPos(str) {
+            var textarea = document.getElementById("SQLtext");
+            var curStart = textarea.selectionStart;
+            let x = $("#SQLtext").val();
+            $("#SQLtext").val(x.slice(0, curStart) + str +  x.slice(curStart));
+
+        }
+
+    </script>
+
+    <body>
+        <div id="DivLevel1">
+            <div id="num">데이터 0개 입력</div>
+            <div>1. 쿼리를 입력하세요:</div>
+            <textarea id="SQLtext" rows="5"></textarea>
+            <button id="btnDelete">입력 초기화</button>
+            <button id="btnFin">입력 완료</button>
+            <button id="DateNumPlus">데이터 입력 추가</button>
+            <button id="DateNumDelete">데이터 입력 삭제- 중간 데이터 건너뜀</button>
+            <pre id="SQLtextDiv"></pre>
+            <button id="btnNext1" style="display: none;">확인</button>
+        </div>
+
+        <div id="DivLevel2" style="display: none;">
+            <pre id="SQLtextDiv2"></pre>
+            <div>2. 데이터 나누는 기호는?:</div>
+            <input id="DataTextDiv">
+            <div>3. 데이터를 입력하세요:</div>
+            <textarea id="DataText" rows="5"></textarea>
+            <button id="btnTagSC">태그 확인 - console</button>
+            <button id="btnNext2">확인</button>
+        </div>
+
+        <div id="DivLevel3" style="display: none;">
+            <div id="MakeFinDataTotal"></div>
+            <pre id="MakeFinData"></pre>
+        </div>
+    </body>
+</html>
